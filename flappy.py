@@ -87,6 +87,11 @@ def mainGame():
  
         crashTest = isCollide(player_x, player_y, upperPipes, lowerPipes)
         if crashTest:
+            gameover_x = int((screen_width - game_images['gameover'].get_width())/2)
+            gameover_y = int((screen_height - game_images['gameover'].get_height())/2)
+            screen.blit(game_images['score'],((screen_width - width)/4,screen_height*0.20)) 
+            screen.blit(game_images['gameover'],(gameover_x,gameover_y))
+            pygame.display.update()
             return
  
         playerMidPos = player_x + game_images['player'].get_width()/2  
@@ -132,7 +137,7 @@ def mainGame():
         Xoffset = (screen_width - width)/2 
  
         for digit in myDigits:
-            screen.blit(game_images['numbers'][digit], (Xoffset, screen_height*0.12))
+            screen.blit(game_images['numbers'][digit], (Xoffset, screen_height*0.32))
             Xoffset += game_images['numbers'][digit].get_width()
         pygame.display.update()
         fps_clock.tick(fps) 
@@ -187,6 +192,8 @@ if __name__ == "__main__":
         )
     game_images['message'] = pygame.image.load('gallery/images/message.png').convert_alpha()
     game_images['base'] = pygame.image.load('gallery/images/base.png').convert_alpha()
+    game_images['gameover'] = pygame.image.load('gallery/images/gameover.png').convert_alpha()
+    game_images['score'] = pygame.image.load('gallery/images/score.png').convert_alpha()
     game_images['pipe'] = (
         pygame.transform.rotate(pygame.image.load(pipe).convert_alpha(), 180),
         pygame.image.load(pipe).convert_alpha()
