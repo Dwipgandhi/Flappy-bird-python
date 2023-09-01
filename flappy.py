@@ -5,6 +5,7 @@ from pygame.locals import *
 
 
 fps = 32
+maxScore = 20
 screen_width = 289
 screen_height = 511
 screen = pygame.display.set_mode((screen_width,screen_height))
@@ -14,8 +15,6 @@ game_sounds = {}
 player = 'gallery/images/bird.png'
 background = 'gallery/images/background.png'
 pipe = 'gallery/images/pipe.png'
-
-
 
 
 def welcomeScreen():
@@ -69,7 +68,7 @@ def mainGame():
  
     playerFlapVel = -8
     playerFlapped = False
- 
+
  
     while True:
         for event in pygame.event.get():
@@ -90,14 +89,24 @@ def mainGame():
             screen.blit(game_images['gameover'],(gameover_x,gameover_y))
             pygame.display.update()
             return
+        
+        winTest = isScoreMax(score)
+        if winTest:
+            youwin_x = int((screen_width - game_images['youwin'].get_width())/2)
+            youwin_y = int((screen_height - game_images['youwin'].get_height())/2)
+            screen.blit(game_images['score'],((screen_width - width)/4,screen_height*0.20)) 
+            screen.blit(game_images['youwin'],(youwin_x,youwin_y))
+            pygame.display.update()
+            return
  
         playerMidPos = player_x + game_images['player'].get_width()/2  
         for pipe in upperPipes:
             pipeMidPos = pipe['x'] + game_images['pipe'][0].get_width()/2
             if pipeMidPos<= playerMidPos < pipeMidPos + 4:
-                score +=1
-                print(f"Your Score is {score}")
-                game_sounds['point'].play()
+                if score < maxScore:
+                     score +=1
+                     print(f"Your Score is {score}")
+                     game_sounds['point'].play()
  
         if playerVelY <playerMaxVelY and not playerFlapped:
             playerVelY += playerAccY
@@ -155,7 +164,14 @@ def isCollide(player_x, player_y, upperPipes, lowerPipes):
         if (player_y + game_images['player'].get_height() > pipe['y']) and (abs(player_x - pipe['x']) < game_images['pipe'][0].get_width() - 15):
             game_sounds['hit'].play()
             return True
+   
+    return False
  
+def isScoreMax(score):
+    if score == maxScore:
+        game_sounds['point'].play()
+        return True
+        
     return False
  
  
@@ -190,6 +206,7 @@ if __name__ == "__main__":
     game_images['message'] = pygame.image.load('gallery/images/message.png').convert_alpha()
     game_images['base'] = pygame.image.load('gallery/images/base.png').convert_alpha()
     game_images['gameover'] = pygame.image.load('gallery/images/gameover.png').convert_alpha()
+    game_images['youwin'] = pygame.image.load('gallery/images/youwin.png').convert_alpha()
     game_images['score'] = pygame.image.load('gallery/images/score.png').convert_alpha()
     game_images['pipe'] = (
         pygame.transform.rotate(pygame.image.load(pipe).convert_alpha(), 180),
